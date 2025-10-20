@@ -9,6 +9,7 @@
   "author": "Heinrich Worring",
   "license": "ISC",
   "dependencies": {
+    "express": "^5.1.0",
     "keythereum": "^2.0.0",
     "web3": "^4.16.0"
   },
