@@ -9,8 +9,10 @@
   "author": "Heinrich Worring",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "keythereum": "^2.0.0",
+    "stream": "^0.0.3",
     "web3": "^4.16.0"
   },
   "keywords": [],
