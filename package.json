@@ -1,0 +1,20 @@
+{
+  "name": "cryptowallet",
+  "version": "1.0.0",
+  "description": "Node to contact Crypto-Network",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Heinrich Worring",
+  "license": "ISC",
+  "dependencies": {
+    "keythereum": "^2.0.0",
+    "web3": "^4.16.0"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
