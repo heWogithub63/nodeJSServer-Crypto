@@ -114,7 +114,8 @@
                                             balance = web3.utils.fromWei("1", "ether");
                                             console.log("Balance in wei:", balanceInWei);
                                             console.log("Balance in ETH:", balance);
-                                            dataReturn(balance);
+
+                                            dataReturn({ Balance : balance });
                                         });
                                     } catch (error) {
                                         console.log(error);
