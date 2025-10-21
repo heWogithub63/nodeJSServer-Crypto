@@ -94,6 +94,7 @@
                            }
                            case('addBlock'): {
                                delete obj.Caller;
+                               delete obj.Network;
                                // Add a new block
                                JeChain.addBlock(new Block(Date.now().toString(), obj));
 
@@ -139,6 +140,6 @@
      }
 
      async function dataReturn (trans) {
-            //console.dir('---'+trans+'....');
+            console.dir('---'+trans+'....');
             await response.status(200).json({body: JSON.stringify(trans)});
      }
