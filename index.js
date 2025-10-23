@@ -58,7 +58,7 @@
              arrk = Object.keys(data);
              arrv = Object.values(data);
 
-             console.log("-->"+JSON.stringify(obj) +'----'+ arrv[0] +'----'+ arrv[1]);
+             //console.log("-->"+JSON.stringify(obj) +'----'+ arrv[0] +'----'+ arrv[1]);
 
              if(arrv[0].startsWith('Web3Request'))
                  checkConnection();
@@ -74,15 +74,15 @@
                       switch (arrv[0].substring(arrv[0].indexOf('_') +1)) {
                            case('createAccount'): {
                                 var account = web3.eth.accounts.create();
-                                dataReturn(account.address +'----'+ account.privateKey);
+                                dataReturn(account);
                               break;
                            }
                            case('getAccounts'): {
                                const myFunc = async () => {
                                    try {
                                        const myAccounts = await web3.eth.getAccounts();
-                                       console.log(myAccounts)
-                                       return myAccounts;
+                                       //console.log(myAccounts)
+                                       dataReturn(myAccounts);
 
                                    } catch (err) {
                                        console.log(err);
@@ -98,9 +98,6 @@
                                // Add a new block
                                JeChain.addBlock(new Block(Date.now().toString(), obj));
 
-                               // Prints out the updated chain
-                               console.log(JeChain.chain);
-                               //Sends Object back
                                dataReturn(JeChain.chain);
                               break;
                            }
@@ -112,9 +109,6 @@
                                     try {
                                         web3.eth.getBalance(address).then((balanceInWei) => {
                                             balance = web3.utils.fromWei("1", "ether");
-                                            console.log("Balance in wei:", balanceInWei);
-                                            console.log("Balance in ETH:", balance);
-
                                             dataReturn({ Balance : balance });
                                         });
                                     } catch (error) {
@@ -123,16 +117,24 @@
                               break;
                            }
                            case('getGasPrice'): {
-                                web3.eth.getGasPrice().then(console.log);
+                                web3.eth.getGasPrice()
+                                    .then(data=> {
+                                          dataReturn(data);
+                                    });
                               break;
                            }
                            case('getChainId'): {
-                                web3.eth.getChainId().then(console.log);
+                                web3.eth.getChainId()
+                                    .then(data=> {
+                                          dataReturn(data);
+                                    });
                               break;
                            }
                            case('createWallet'): {
-                                const wallet = web3.eth.accounts.wallet.create(1);
-                                console.log(wallet);
+                                web3.eth.accounts.wallet.create(1)
+                                    .then(data=> {
+                                          dataReturn(data);(wallet);
+                                   });
                               break;
                            }
                       }
@@ -141,6 +143,6 @@
      }
 
      async function dataReturn (trans) {
-            console.dir('---'+trans+'....');
+            //console.dir('---'+trans+'....');
             await response.status(200).json({body: JSON.stringify(trans)});
      }
