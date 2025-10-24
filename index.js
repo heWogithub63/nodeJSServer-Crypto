@@ -108,7 +108,7 @@
 
                                     try {
                                         web3.eth.getBalance(address).then((balanceInWei) => {
-                                            balance = web3.utils.fromWei("1", "ether");
+                                            balance = web3.utils.fromWei(balanceInWei, "ether");
                                             dataReturn({ Balance : balance });
                                         });
                                     } catch (error) {
