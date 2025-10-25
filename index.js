@@ -160,5 +160,8 @@
 
      async function dataReturn (trans) {
             //console.dir('---'+trans+'....');
-            await response.status(200).json({body: JSON.stringify(trans)});
+            await response.status(200).json({body: JSON.stringify(trans, (key, value) =>
+              typeof value === "bigint" ? Number(value) : value,
+            )});
+            //await response.status(200).json({body: JSON.stringify(trans)});
      }
