@@ -148,11 +148,9 @@
                           let pkey = arrsv[0];
 
                           await web3.eth.accounts.wallet.add(pkey);
-                          await web3.eth.sendTransaction({from: sender, to: recipient, value: web3.utils.toWei(sum, 'ether'), gasLimit: 21000})
-                                     .than(response => {
-                                         dataReturn(response);
-                                     })
+                          var response = await web3.eth.sendTransaction({from: sender, to: recipient, value: web3.utils.toWei(sum, 'ether'), gasLimit: 21000});
 
+                          dataReturn(response);
                          break;
                       }
                  }
