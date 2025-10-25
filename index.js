@@ -69,94 +69,97 @@
      async function checkConnection() {
             const web3 = new Web3(arrv[1]);
 
-            await web3.eth.getGasPrice().then((result) => {
-                 if(result !== null) {
-                      switch (arrv[0].substring(arrv[0].indexOf('_') +1)) {
-                           case('createAccount'): {
-                                var account = web3.eth.accounts.create();
-                                dataReturn(account);
-                              break;
-                           }
-                           case('getAccounts'): {
-                               const myFunc = async () => {
-                                   try {
-                                       const myAccounts = web3.eth.getAccounts();
-                                       //console.log(myAccounts)
-                                       dataReturn(myAccounts);
 
-                                   } catch (err) {
-                                       console.log(err);
-                                   }
+            //if(result !== null) {
+                 switch (arrv[0].substring(arrv[0].indexOf('_') +1)) {
+                      case('createAccount'): {
+                           var account = await web3.eth.accounts.create();
+                           dataReturn(account);
+                         break;
+                      }
+                      case('getAccounts'): {
+                          const myFunc = async () => {
+                              try {
+                                  const myAccounts = await web3.eth.getAccounts();
+                                  //console.log(myAccounts)
+                                  dataReturn(myAccounts);
+
+                              } catch (err) {
+                                  console.log(err);
+                              }
+                          }
+
+                          myFunc()
+                         break;
+                      }
+                      case('addBlock'): {
+                          delete obj.Caller;
+                          delete obj.Network;
+                          // Add a new block
+                          JeChain.addBlock(new Block(Date.now().toString(), obj));
+
+                          dataReturn(JeChain.chain);
+                         break;
+                      }
+                      case('checkBalance'): {
+                           let address = arrv[2];
+                           let balance;
+
+
+                               try {
+                                   await web3.eth.getBalance(address)
+                                      .then((balanceInWei) => {
+                                       balance = web3.utils.fromWei(balanceInWei, "ether");
+                                       dataReturn({ Balance : balance });
+                                      });
+                               } catch (error) {
+                                   console.log(error);
                                }
+                         break;
+                      }
+                      case('getGasPrice'): {
+                               await web3.eth.getGasPrice()
+                                   .then(data=> {
+                                         dataReturn(data);
+                                   });
+                         break;
+                      }
+                      case('getChainId'): {
+                               await web3.eth.getChainId()
+                                   .then(data=> {
+                                         dataReturn(data);
+                                   });
+                         break;
+                      }
+                      case('createWallet'): {
+                               await web3.eth.accounts.wallet.create(1)
+                                   .then(data=> {
 
-                               myFunc()
-                              break;
-                           }
-                           case('addBlock'): {
-                               delete obj.Caller;
-                               delete obj.Network;
-                               // Add a new block
-                               JeChain.addBlock(new Block(Date.now().toString(), obj));
+                                         dataReturn(data);
+                                   });
+                         break;
+                      }
+                      case('transactionSend'): {
+                          var arrsk = Object.keys(arrv[2]);
+                          var arrsv = Object.values(arrv[2]);
+                          let sender = arrsv[1];
+                          let recipient = arrsv[2];
+                          let sum = arrsv[3];
+                          let pkey = arrsv[0];
 
-                               dataReturn(JeChain.chain);
-                              break;
-                           }
-                           case('checkBalance'): {
-                                let address = arrv[2];
-                                let balance;
+                          await web3.eth.accounts.wallet.add(pkey)
+                                    .then(data=> {
+                                           web3.eth.sendTransaction({from: sender, to: recipient, value: web3.utils.toWei(sum, 'ether'), gasLimit: 21000})
+                                                    .than(response => {
+                                                        dataReturn(response);
+                                                    })
+                                    });
 
-
-                                    try {
-                                        web3.eth.getBalance(address)
-                                           .then((balanceInWei) => {
-                                            balance = web3.utils.fromWei(balanceInWei, "ether");
-                                            dataReturn({ Balance : balance });
-                                           });
-                                    } catch (error) {
-                                        console.log(error);
-                                    }
-                              break;
-                           }
-                           case('getGasPrice'): {
-                                    web3.eth.getGasPrice()
-                                        .then(data=> {
-                                              dataReturn(data);
-                                        });
-                              break;
-                           }
-                           case('getChainId'): {
-                                    web3.eth.getChainId()
-                                        .then(data=> {
-                                              dataReturn(data);
-                                        });
-                              break;
-                           }
-                           case('createWallet'): {
-                                    web3.eth.accounts.wallet.create(1)
-                                        .then(data=> {
-                                         
-                                              dataReturn(data);
-                                        });
-                              break;
-                           }
-                           case('transactionSend'): {
-                               let sender = arrv[2];
-                               let recipient = arrv[3];
-                               let sum = arrv[4];
-
-                               web3.eth.accounts.wallet.add(pkey)
-                                         .then(data=> {
-                                                web3.eth.sendTransaction({from: sender, to: recipient, value: web3.utils.toWei(sum, 'ether'), gasLimit: 21000})
-                                                         .than(response => {
-                                                             dataReturn(response);
-                                                         })
-                                         });
-
-                              break;
-                           }
+                         break;
                       }
                  }
-            });
+            //}
+
      }
 
      async function dataReturn (trans) {
