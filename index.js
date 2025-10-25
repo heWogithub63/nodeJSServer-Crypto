@@ -80,7 +80,7 @@
                            case('getAccounts'): {
                                const myFunc = async () => {
                                    try {
-                                       const myAccounts = await web3.eth.getAccounts();
+                                       const myAccounts = web3.eth.getAccounts();
                                        //console.log(myAccounts)
                                        dataReturn(myAccounts);
 
@@ -107,34 +107,51 @@
 
 
                                     try {
-                                        web3.eth.getBalance(address).then((balanceInWei) => {
+                                        web3.eth.getBalance(address)
+                                           .then((balanceInWei) => {
                                             balance = web3.utils.fromWei(balanceInWei, "ether");
                                             dataReturn({ Balance : balance });
-                                        });
+                                           });
                                     } catch (error) {
                                         console.log(error);
                                     }
                               break;
                            }
                            case('getGasPrice'): {
-                                web3.eth.getGasPrice()
-                                    .then(data=> {
-                                          dataReturn(data);
-                                    });
+                                    web3.eth.getGasPrice()
+                                        .then(data=> {
+                                              dataReturn(data);
+                                        });
                               break;
                            }
                            case('getChainId'): {
-                                web3.eth.getChainId()
-                                    .then(data=> {
-                                          dataReturn(data);
-                                    });
+                                    web3.eth.getChainId()
+                                        .then(data=> {
+                                              dataReturn(data);
+                                        });
                               break;
                            }
                            case('createWallet'): {
-                                web3.eth.accounts.wallet.create(1)
-                                    .then(data=> {
-                                          dataReturn(data);(wallet);
-                                   });
+                                    web3.eth.accounts.wallet.create(1)
+                                        .then(data=> {
+                                         
+                                              dataReturn(data);
+                                        });
+                              break;
+                           }
+                           case('transactionSend'): {
+                               let sender = arrv[2];
+                               let recipient = arrv[3];
+                               let sum = arrv[4];
+
+                               web3.eth.accounts.wallet.add(pkey)
+                                         .then(data=> {
+                                                web3.eth.sendTransaction({from: sender, to: recipient, value: web3.utils.toWei(sum, 'ether'), gasLimit: 21000})
+                                                         .than(response => {
+                                                             dataReturn(response);
+                                                         })
+                                         });
+
                               break;
                            }
                       }
