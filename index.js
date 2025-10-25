@@ -152,7 +152,6 @@
                                      .than(response => {
                                          dataReturn(response);
                                      })
-                          });
 
                          break;
                       }
