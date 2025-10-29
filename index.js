@@ -11,6 +11,9 @@
      const { Block, Blockchain } = require('./blockchainImpl.js');
      const JeChain = new Blockchain();
 
+     let latestKnownBlockNumber = -1;
+     let blockTime = 5000;
+
      var obj;
      var arrk,arrv;
      var response;
@@ -81,7 +84,7 @@
                           const myFunc = async () => {
                               try {
                                   const myAccounts = await web3.eth.getAccounts();
-                                  //console.log(myAccounts)
+                                  console.log(myAccounts[0])
                                   dataReturn(myAccounts);
 
                               } catch (err) {
@@ -99,6 +102,25 @@
                           JeChain.addBlock(new Block(Date.now().toString(), obj));
 
                           dataReturn(JeChain.chain);
+                         break;
+                      }
+                      case('lastBlock'): {
+                          let blockNr = await web3.eth.getBlockNumber();
+                          let block = await web3.eth.getBlock(blockNr);
+                          let transactSum = new Object();
+                          let n = 1
+                          for (const transactionHash of block.transactions) {
+                              let transaction = await web3.eth.getTransaction(transactionHash);
+                              let transactionReceipt = await web3.eth.getTransactionReceipt(transactionHash);
+                              let action = 'Transaction_0'+n;
+                              transaction = Object.assign(transaction, transactionReceipt);
+
+                              Object.assign(transactSum, {[action] :  transaction});
+                              if(n >= 9)
+                                break;
+                              n++;
+                          }
+                          dataReturn(transactSum);
                          break;
                       }
                       case('checkBalance'): {
@@ -139,7 +161,15 @@
                                    });
                          break;
                       }
+                      case('accountToWallet'): {
+
+                           var accToWa = await web3.eth.accounts.wallet.add(arrv[2]);
+                           dataReturn(accToWa);
+
+                         break;
+                      }
                       case('transactionSend'): {
+
                           var arrsk = Object.keys(arrv[2]);
                           var arrsv = Object.values(arrv[2]);
                           let sender = arrsv[1];
@@ -158,10 +188,11 @@
 
      }
 
+
+
      async function dataReturn (trans) {
             //console.dir('---'+trans+'....');
             await response.status(200).json({body: JSON.stringify(trans, (key, value) =>
               typeof value === "bigint" ? Number(value) : value,
             )});
-            //await response.status(200).json({body: JSON.stringify(trans)});
      }
