@@ -83,7 +83,7 @@
                       case('addAccount'): {
                            var accountdata = await web3.eth.accounts.privateKeyToAccount(arrv[2]);
                                dataReturn(accountdata);
-                           break;              
+                           break;
                       }
                       case('getAccounts'): {
                           const myFunc = async () => {
@@ -121,7 +121,7 @@
                               transaction = Object.assign(transaction, transactionReceipt);
 
                               Object.assign(transactSum, {[action] :  transaction});
-                              if(n >= parseInt(arrv[3]))
+                              if(n >= parseInt(arrv[2]))
                                 break;
                               n++;
                           }
