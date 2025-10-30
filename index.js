@@ -116,7 +116,7 @@
                               transaction = Object.assign(transaction, transactionReceipt);
 
                               Object.assign(transactSum, {[action] :  transaction});
-                              if(n >= 9)
+                              if(n >= parseInt(arrv[3]))
                                 break;
                               n++;
                           }
