@@ -81,7 +81,7 @@
                          break;
                       }
                       case('addAccount'): {
-                           var existingAccount = await web3.eth.accounts.privateKeyToAccount(arv[2]);
+                           var existingAccount = await web3.eth.accounts.privateKeyToAccount(arrv[2]);
                            dataReturn(existingAccount);
                       }
                       case('getAccounts'): {
