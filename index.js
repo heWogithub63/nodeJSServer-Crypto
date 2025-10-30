@@ -81,8 +81,11 @@
                          break;
                       }
                       case('addAccount'): {
-                           var existingAccount = await web3.eth.accounts.privateKeyToAccount(arrv[2]);
-                           dataReturn(existingAccount);
+                           await web3.eth.accounts.privateKeyToAccount(arrv[2])
+                                         .then((accountdata) => {
+                                                 dataReturn(accountdata);
+                                         });
+
                       }
                       case('getAccounts'): {
                           const myFunc = async () => {
