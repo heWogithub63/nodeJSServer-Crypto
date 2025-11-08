@@ -144,6 +144,17 @@
                                }
                          break;
                       }
+                      case('receive_crypto'): {
+                          var obj = new Object();
+                          var n = 1;
+                          var res = await checkBlock(web3,arrv[2],parseInt(arrv[3]));
+                          console.log('---'+res);
+                          if(res === '0') res = { result : 'no successful agreement found'};
+
+                          dataReturn(res);
+
+                         break;
+                      }
                       case('getGasPrice'): {
                                await web3.eth.getGasPrice()
                                    .then(data=> {
@@ -193,6 +204,34 @@
 
      }
 
+     async function checkBlock(web3,address,nstop) {
+         let blocknr = 'pending';
+
+         for(var i=0;i<nstop;i++) {
+             
+             let block =  await web3.eth.getBlock(blocknr);
+             console.log('Checking new block ' + block.number);
+
+             for (let txHash of block.transactions) {
+                 const tx = await web3.eth.getTransaction(txHash);
+                 console.dir(address?.toLowerCase()+'----'+tx.to);
+                 if (address?.toLowerCase() === tx.to) {
+                     console.log('New transaction found. Block - ' +block.number);
+                     console.log('Transaction: ' +tx);
+                     i = nstop;
+
+                     return await web3.eth.getTransactionReceipt(txHash);
+                 }
+             }
+             if(i === 0)
+                blocknr = 'latest';
+             else
+                blocknr = ''+parseInt(block.number) -1;
+
+         }
+
+        return '0';
+     }
 
 
      async function dataReturn (trans) {
@@ -200,4 +239,5 @@
             await response.status(200).json({body: JSON.stringify(trans, (key, value) =>
               typeof value === "bigint" ? Number(value) : value,
             )});
+
      }
