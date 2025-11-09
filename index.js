@@ -214,7 +214,7 @@
 
              for (let txHash of block.transactions) {
                  const tx = await web3.eth.getTransaction(txHash);
-
+                 console.dir('----> ' +tx);
                  if (address?.toLowerCase() === tx.to) {
                      console.log('New transaction found. Block - ' +block.number);
                      console.log('Transaction: ' +tx);
