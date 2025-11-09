@@ -137,7 +137,8 @@
                                    await web3.eth.getBalance(address)
                                       .then((balanceInWei) => {
                                        balance = web3.utils.fromWei(balanceInWei, "ether");
-                                       dataReturn({ Balance : balance });
+
+                                       dataReturn(balance);
                                       });
                                } catch (error) {
                                    console.log(error);
@@ -145,11 +146,10 @@
                          break;
                       }
                       case('receive_crypto'): {
-                          var obj = new Object();
-                          var n = 1;
+
                           var res = await checkBlock(web3,arrv[2],parseInt(arrv[3]));
-                          console.log('---'+res);
-                          if(res === '0') res = { result : 'no successful agreement found'};
+
+                          if(res === '0') res = 'no successful agreement found';
 
                           dataReturn(res);
 
@@ -214,7 +214,7 @@
 
              for (let txHash of block.transactions) {
                  const tx = await web3.eth.getTransaction(txHash);
-                 console.dir(address?.toLowerCase()+'----'+tx.to);
+
                  if (address?.toLowerCase() === tx.to) {
                      console.log('New transaction found. Block - ' +block.number);
                      console.log('Transaction: ' +tx);
@@ -237,7 +237,7 @@
      async function dataReturn (trans) {
             //console.dir('---'+trans+'....');
             await response.status(200).json({body: JSON.stringify(trans, (key, value) =>
-              typeof value === "bigint" ? Number(value) : value,
+              typeof value === "bigint" ? Number(value) : value
             )});
 
      }
