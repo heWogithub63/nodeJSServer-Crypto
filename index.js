@@ -110,21 +110,8 @@
                          break;
                       }
                       case('lastBlock'): {
-                          let blockNr = await web3.eth.getBlockNumber();
-                          let block = await web3.eth.getBlock(blockNr);
-                          let transactSum = new Object();
-                          let n = 1
-                          for (const transactionHash of block.transactions) {
-                              let transaction = await web3.eth.getTransaction(transactionHash);
-                              let transactionReceipt = await web3.eth.getTransactionReceipt(transactionHash);
-                              let action = 'Transaction_0'+n;
-                              transaction = Object.assign(transaction, transactionReceipt);
-
-                              Object.assign(transactSum, {[action] :  transaction});
-                              if(n >= parseInt(arrv[2]))
-                                break;
-                              n++;
-                          }
+                          let transactSum = await checkBlock('lastTransFrom',web3,arrv[2],arrv[3]);
+                          if(transactSum == 0) transactSum = 'no agreement for the included sender found';
                           dataReturn(transactSum);
                          break;
                       }
@@ -147,11 +134,9 @@
                       }
                       case('receive_crypto'): {
 
-                          var res = await checkBlock(web3,arrv[2],parseInt(arrv[3]));
-
-                          if(res === '0') res = 'no successful agreement found';
-
-                          dataReturn(res);
+                          let transactSum = await checkBlock('lastTransTo',web3,arrv[2],arrv[3]);
+                          if(transactSum == 0) transactSum = 'no agreement for the included recipient found';
+                          dataReturn(transactSum);
 
                          break;
                       }
@@ -204,37 +189,42 @@
 
      }
 
-     async function checkBlock(web3,address,nstop) {
-         var blocknr = 'pending';
-         var block;
+     async function checkBlock(caller,web3,address,nstop) {
 
-         for(var i=0;i<nstop;i++) {
-             console.log('....' +blocknr);
-             block =  await web3.eth.getBlock(blocknr);
-             console.log('Checking new block ' + block.number);
+         let blockNr = await web3.eth.getBlockNumber();
+         let block = await web3.eth.getBlock(blockNr);
+         let transactSum = new Object();
+         let n = 0, n1 = 0;
+         do {
+             for (const transactionHash of block.transactions) {
+                 let transaction = await web3.eth.getTransaction(transactionHash);
 
-             for (let txHash of block.transactions) {
-                 const tx = await web3.eth.getTransaction(txHash);
-                 console.dir('----> ' +tx.to);
-                 if (address?.toLowerCase() === tx.to) {
-                     console.log('New transaction found. Block - ' +block.number);
-                     console.log('Transaction: ' +tx);
-                     i = nstop;
+                 if ((caller == 'lastTransTo' && address?.toLowerCase() === transaction.to?.toLowerCase()) ||
+                     (caller == 'lastTransFrom' && address?.toLowerCase() === transaction.from?.toLowerCase())) {
 
-                     return await web3.eth.getTransactionReceipt(txHash);
+                     let transactionReceipt = await web3.eth.getTransactionReceipt(transactionHash);
+                     let action = 'Transaction_0'+n+'\n';
+                     Object.assign(transactSum, {
+                                    [action] : transactionReceipt
+                     })
+                    n1++;
                  }
+
              }
-             console.log(block.transactions.length);
-             blocknr = ''+(parseInt(block.number) -1);
 
-         }
+             n++;
+         } while(n > parseInt(nstop));
 
-        return '0';
+         if( n1 > 0)
+            return transactSum;
+         else
+            return 0;
+
      }
 
 
      async function dataReturn (trans) {
-            //console.dir('---'+trans+'....');
+            //console.dir('---'+JSON.stringify(trans)+'....');
             await response.status(200).json({body: JSON.stringify(trans, (key, value) =>
               typeof value === "bigint" ? Number(value) : value
             )});
