@@ -205,16 +205,17 @@
      }
 
      async function checkBlock(web3,address,nstop) {
-         let blocknr = 'pending';
+         var blocknr = 'pending';
+         var block;
 
          for(var i=0;i<nstop;i++) {
-             
-             let block =  await web3.eth.getBlock(blocknr);
+             console.log('....' +blocknr);
+             block =  await web3.eth.getBlock(blocknr);
              console.log('Checking new block ' + block.number);
 
              for (let txHash of block.transactions) {
                  const tx = await web3.eth.getTransaction(txHash);
-                 console.dir('----> ' +tx);
+                 console.dir('----> ' +tx.to);
                  if (address?.toLowerCase() === tx.to) {
                      console.log('New transaction found. Block - ' +block.number);
                      console.log('Transaction: ' +tx);
