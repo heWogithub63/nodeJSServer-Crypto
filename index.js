@@ -224,10 +224,8 @@
                      return await web3.eth.getTransactionReceipt(txHash);
                  }
              }
-             if(i === 0)
-                blocknr = 'latest';
-             else
-                blocknr = ''+parseInt(block.number) -1;
+             console.log(block.transactions.length);
+             blocknr = ''+(parseInt(block.number) -1);
 
          }
 
