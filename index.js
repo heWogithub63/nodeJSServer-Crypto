@@ -190,12 +190,13 @@
      }
 
      async function checkBlock(caller,web3,address,nstop) {
-
-         let blockNr = await web3.eth.getBlockNumber();
-         let block = await web3.eth.getBlock(blockNr);
+         let blockNr;
+         let block_number = await web3.eth.getBlockNumber()
+                                      .then ((blnr) => {blockNr = blnr});
          let transactSum = new Object();
          let n = 0, n1 = 0;
          do {
+             let block = await web3.eth.getBlock(blockNr);
              for (const transactionHash of block.transactions) {
                  let transaction = await web3.eth.getTransaction(transactionHash);
 
@@ -212,8 +213,9 @@
 
              }
 
+             blockNr--;
              n++;
-         } while(n > parseInt(nstop));
+         } while(n < parseInt(nstop));
 
          if( n1 > 0)
             return transactSum;
