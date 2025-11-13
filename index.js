@@ -204,7 +204,7 @@
                      (caller == 'lastTransFrom' && address?.toLowerCase() === transaction.from?.toLowerCase())) {
 
                      let transactionReceipt = await web3.eth.getTransactionReceipt(transactionHash);
-                     let action = 'Transaction_0'+n+'\n';
+                     let action = 'Transaction_0'+n1;
                      Object.assign(transactSum, {
                                     [action] : transactionReceipt
                      })
